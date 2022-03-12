@@ -1,3 +1,5 @@
+#GPL3.0 - (c)edwin@datux.nl
+
 import sys
 import os
 import logging
@@ -13,22 +15,18 @@ from pydobot import Dobot
 suck_delay = 1
 
 # links boven
-# pallet_lb=( -4.6, -270.0,-48.4 )
 Xlb = -4.6
 Ylb = -270
 
 # rechts boven
-# pallet_rb=( -7.4, -195.0,-43.4 )
 Xrb = -7.4
 Yrb = -195.0
 
 # links onder
-# pallet_lo=( 70.9, -268.5,-46.2 )
 Xlo = 70.9
 Ylo = -268.5
 
 # rechts onder
-# pallet_ro=( 67.5, -195.1,-47.3 )
 Xro = 65.5
 Yro = -195.1
 
@@ -78,22 +76,9 @@ def calc_pallet(r, k):
     x_factor = (r - 1) / (pallet_grid - 1)
     y_factor = (k - 1) / (pallet_grid - 1)
 
-    # x = Xro * (1 - x_factor) * (1 - y_factor) + Xlo * (1 - x_factor) * y_factor + Xrb * x_factor * (1 - y_factor) + Xlb * x_factor * y_factor
-    # y = Yro * (1 - y_factor) * (1 - x_factor) + Ylo * (1 - y_factor) * x_factor + Yrb * y_factor * (1 - x_factor) + Ylb * y_factor * x_factor
     x = Xro * (1 - x_factor) * (1 - y_factor) + Xlo * (1 - x_factor) * y_factor + Xrb * x_factor * (1 - y_factor) + Xlb * x_factor * y_factor
-    # y = Yro * (1 - y_factor) * (1 - x_factor) + Ylo * (1 - y_factor) * x_factor + Yrb * y_factor * (1 - x_factor) + Ylb * y_factor * x_factor
     y = Yro * (1 - x_factor) * (1 - y_factor) + Ylo * (1 - x_factor) * y_factor + Yrb * x_factor * (1 - y_factor) + Ylb * x_factor * y_factor
 
-
-
-    # x_comp = ((Yn1 - Y11) / (pallet_grid - 1)) * (r - 1)
-    # y = Y11 + ((Y1n - Y11) / (pallet_grid - 1)) * (k - 1) + x_comp
-    #
-    # y_comp = ((X1n - X11) / (pallet_grid - 1)) * (k - 1)
-    # x = X11 + ((Xn1 - X11) / (pallet_grid - 1)) * (r - 1) + y_comp
-
-    # x=pallet_lb[0] + (((pallet_ro[0]-pallet_lb[0])/(pallet_grid-1)) * (r-1))
-    # y=pallet_lb[1] + (((pallet_ro[1]-pallet_lb[1])/(pallet_grid-1)) * (k-1))
     return (x, y)
 
 
