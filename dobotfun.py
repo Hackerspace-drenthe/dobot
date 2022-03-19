@@ -53,7 +53,7 @@ class DobotFun(Dobot):
         self.log.progress(f"[ {pose} ] {extra_info}")
 
 
-    def wacht_op(self, cmd_id):
+    def wacht_op(self, cmd_id, check_alarm=True):
         """wacht op command en toon mooie progress info op beeld. ook error handeling"""
 
         current_cmd_id = self._get_queued_cmd_current_index()
@@ -62,19 +62,26 @@ class DobotFun(Dobot):
             current_cmd_id = self._get_queued_cmd_current_index()
 
             #alarm?
-            alarms = self.get_alarms()
-            if alarms:
-                self.error(f"Alarm: {', '.join(map(str, alarms))}.")
-                sys.exit(1)
+            if check_alarm:
+                alarms = self.get_alarms()
+                if alarms:
+                    self.error(f"Alarm: {', '.join(map(str, alarms))}.")
+                    sys.exit(1)
 
     def home(self):
         self.wacht_op(super().home())
 
     def move_to(self, x, y, z, r=0., mode=MODE_PTP.MOVJ_XYZ):
         self.debug(f"move_to x={x}, y={y}, z={z}, r={r}")
-        self.wacht_op(super().move_to(x,y,z,r,mode))
+        id = super().move_to(x, y, z, r, mode)
+        self.wacht_op(id)
+        return id
 
-
+    def move_to_nowait(self, x, y, z, r=0., mode=MODE_PTP.MOVJ_XYZ):
+        self.debug(f"move_to x={x}, y={y}, z={z}, r={r}")
+        id=super().move_to(x, y, z, r, mode)
+        self.show_progress()
+        return id
 
     def __del__(self):
         self.verbose(f"Connectie naar robot {self.id} gesloten")
