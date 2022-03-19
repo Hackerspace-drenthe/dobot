@@ -38,7 +38,7 @@ class LogConsole:
         if self.colorama:
             print(colorama.Fore.YELLOW + colorama.Style.BRIGHT + "NOTE: " + txt + colorama.Style.RESET_ALL)
         else:
-            print("  NOTE: " + txt)
+            print("NOTE: " + txt)
         sys.stdout.flush()
 
     def verbose(self, txt):
@@ -47,7 +47,7 @@ class LogConsole:
             if self.colorama:
                 print(colorama.Style.NORMAL + "" + txt + colorama.Style.RESET_ALL)
             else:
-                print("  " + txt)
+                print( txt)
             sys.stdout.flush()
 
     def debug(self, txt):
