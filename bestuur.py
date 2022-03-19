@@ -1,7 +1,6 @@
 from pynput import keyboard
 
-from dobotfun import DobotFun
-from pydobot.dobot import MODE_PTP
+from dobotfun.dobotfun import DobotFun
 
 d=DobotFun()
 d.log.show_debug=False

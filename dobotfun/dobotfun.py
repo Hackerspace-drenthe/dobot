@@ -3,7 +3,7 @@ import sys
 
 from serial.tools import list_ports
 
-from LogConsole import LogConsole
+from .LogConsole import LogConsole
 from pydobot import Dobot
 from pydobot.dobot import MODE_PTP
 
