@@ -34,7 +34,7 @@ class DobotFun(Dobot):
             for p in list_ports.comports():
                 print (" "+str(p))
 
-            self.log.verbose ("Eerste poort geselecteerd")
+            self.log.verbose ("")
             port = list_ports.comports()[0].device
 
         if id is None:
@@ -68,7 +68,10 @@ class DobotFun(Dobot):
                     self.error(f"Alarm: {', '.join(map(str, alarms))}.")
                     sys.exit(1)
 
+        self.show_progress("Klaar")
+
     def home(self):
+        self.verbose("Thuis positie opzoeken...")
         self.wacht_op(super().home())
 
     def move_to(self, x, y, z, r=0., mode=MODE_PTP.MOVJ_XYZ):

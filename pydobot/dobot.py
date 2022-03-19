@@ -36,13 +36,18 @@ class DobotException(Exception):
     pass
 
 
-class Position(NamedTuple):
+class Position():
 
     x: float
     y: float
     z: float
     r: float
 
+    def __init__(self,x,y,z,r):
+        self.x=x
+        self.y=y
+        self.z=z
+        self.r=r
 
 class Joints(NamedTuple):
 
