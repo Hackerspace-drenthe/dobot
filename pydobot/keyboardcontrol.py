@@ -11,6 +11,7 @@ class KeyboardControl:
 
         self.d = dobot
         self.d.log.show_debug = False
+        self.d.alarm_check=False
 
     def get(self):
         """lets user control until enter or esc is pressed. when enter is pressed the selected position is returned"""
@@ -109,14 +110,12 @@ Besturing:
                 # if cx!=x or cy!=y or cz!=z or cr!=r:
                 if self.changed:
                     self.changed = False
-                    id = self.d.move_to_nowait(self.p.x, self.p.y, self.p.z, self.p.r)
-                    self.d.wacht_op(id, check_alarm=False)
+                    self.d.move_to_pos(self.p)
 
                     if self.d.get_alarms():
                         # try to recover
                         self.d.clear_alarms()
-                        id = self.d.move_to_nowait(self.p.x, self.p.y, self.p.z, self.p.r)
-                        self.d.wacht_op(id, check_alarm=False)
+                        self.d.move_to_pos(self.p)
                         if self.d.get_alarms():
                             self.d.error("Alarm, ga terug of druk op 'r'")
             listener.join()

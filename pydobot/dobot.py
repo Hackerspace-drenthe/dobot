@@ -43,11 +43,12 @@ class Position():
     z: float
     r: float
 
-    def __init__(self,x,y,z,r):
+    def __init__(self,x=0,y=0,z=0,r=0):
         self.x=x
         self.y=y
         self.z=z
         self.r=r
+
 
 class Joints(NamedTuple):
 

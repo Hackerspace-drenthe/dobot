@@ -29,13 +29,21 @@ class DobotFun(Dobot):
         #(dobot class logt ook nog via logger, maar deze is handiger)
         self.log=LogConsole(show_debug=True, show_verbose=True, color=True)
 
+        self.id=""
+
         if port is None:
             self.log.verbose("Gedetecteerde poorten:")
-            for p in list_ports.comports():
-                print (" "+str(p))
+            ports=list_ports.comports()
+            if ports:
+                for p in ports:
+                    print (" "+str(p))
+            else:
+                self.log.error("Geen compoorten gevonden")
+                sys.exit(1)
 
             self.log.verbose ("")
-            port = list_ports.comports()[0].device
+
+            port = ports[0].device
 
         if id is None:
             self.id=port
@@ -46,6 +54,7 @@ class DobotFun(Dobot):
         super().__init__(port=port)
 
         self.suck(False)
+        self.alarm_check=True
 
     def format_pose(self):
         p=self.get_pose()
@@ -56,7 +65,7 @@ class DobotFun(Dobot):
         self.log.progress(f"[ {pose} ] {extra_info}")
 
 
-    def wacht_op(self, cmd_id, check_alarm=True):
+    def wacht_op(self, cmd_id):
         """wacht op command en toon mooie progress info op beeld. ook error handeling"""
 
         current_cmd_id = self._get_queued_cmd_current_index()
@@ -65,7 +74,7 @@ class DobotFun(Dobot):
             current_cmd_id = self._get_queued_cmd_current_index()
 
             #alarm?
-            if check_alarm:
+            if self.alarm_check:
                 alarms = self.get_alarms()
                 if alarms:
                     self.error(f"Alarm: {', '.join(map(str, alarms))}.")
@@ -77,11 +86,25 @@ class DobotFun(Dobot):
         self.verbose("Thuis positie opzoeken...")
         self.wacht_op(super().home())
 
-    def move_to(self, x, y, z, r=0., mode=MODE_PTP.MOVJ_XYZ):
+    def move_to(self, x, y, z, r=0., mode=None):
         self.debug(f"move_to x={x}, y={y}, z={z}, r={r}")
-        id = super().move_to(x, y, z, r, mode)
+        id = super().move_to(x, y, z, r, MODE_PTP.MOVJ_XYZ)
         self.wacht_op(id)
         return id
+
+    def move_to_pos(self, p):
+        self.move_to(p.x, p.y, p.z, p.r)
+
+    def hop_to(self, x, y, z, r=0.):
+        self.debug(f"hop_to x={x}, y={y}, z={z}, r={r}")
+        id = super().move_to(x, y, z, r, MODE_PTP.JUMP_MOVL_XYZ)
+        self.wacht_op(id)
+        return id
+
+    def hop_to_pos(self, pos):
+        self.hop_to(pos.x, pos.y, pos.z, pos.r)
+        return id
+
 
     def move_to_nowait(self, x, y, z, r=0., mode=MODE_PTP.MOVJ_XYZ):
         self.debug(f"move_to x={x}, y={y}, z={z}, r={r}")
@@ -90,4 +113,9 @@ class DobotFun(Dobot):
         return id
 
     def __del__(self):
-        self.verbose(f"Connectie naar robot {self.id} gesloten")
+        if self.id:
+            self.verbose(f"Connectie naar robot {self.id} gesloten")
+
+
+    def get_pos(self):
+        return self.get_pose().position

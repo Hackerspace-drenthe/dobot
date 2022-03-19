@@ -1,7 +1,7 @@
-import logging
+#!/usr/bin/env python
 
-import dobotfun
+from dobotfun.dobotfun import DobotFun
 
-robot=dobotfun.DobotFun()
+robot=DobotFun()
 
 robot.home()
