@@ -21,6 +21,8 @@ while True:
     print(" g1 t/m g4   : Ga naar coordinaat")
     print("  z          : Calibreer Z hoogte")
     print(" gz          : Ga naar Z hoogte")
+    print(" <r>,<k>     : Ga naar pallet rij, kolom (om te testen of het werkt)")
+    print(" h           : Zoek thuispostitie")
     i=input("> ")
 
     dobot.clear_alarms()
@@ -60,6 +62,9 @@ while True:
             config.z=p.z
             config.save()
 
+    if i=='h':
+        dobot.home()
+
     if i[0]=='g' and len(i)==2:
         if i[1]=='1':
             dobot.hop_to_pos(config.lb)
@@ -73,6 +78,12 @@ while True:
             p=dobot.get_pos()
             p.z=config.z
             dobot.hop_to_pos(p)
+
+    if len(i)==3:
+        r=int(i[0])
+        k=int(i[2])
+        (x,y)=config.pos(r,k)
+        dobot.hop_to(x,y,config.z,0)
 
 
 # pickle.dumps(config)

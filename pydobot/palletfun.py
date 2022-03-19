@@ -24,15 +24,15 @@ class PalletConfig:
         print(f" 3 LO: x{self.lo.x:.2f} y{self.lo.y:<2.2f}\t4 RO: x{self.ro.x:.2f} y{self.ro.y:.2f}")
         print(f"Z hoogte: {self.z:.2f}")
 
-    def pos(r, k):
-        """bepaal positie"""
-        x_factor = (r - 1) / (pallet_grid - 1)
-        y_factor = (k - 1) / (pallet_grid - 1)
+    def pos(self, r, k):
+        """bepaal positie, returned x,y"""
+        x_factor = (r - 1) / (self.grid_size - 1)
+        y_factor = (k - 1) / (self.grid_size - 1)
 
-        x = Xro * (1 - x_factor) * (1 - y_factor) + Xlo * (1 - x_factor) * y_factor + Xrb * x_factor * (1 - y_factor) + Xlb * x_factor * y_factor
-        y = Yro * (1 - x_factor) * (1 - y_factor) + Ylo * (1 - x_factor) * y_factor + Yrb * x_factor * (1 - y_factor) + Ylb * x_factor * y_factor
+        x = self.ro.x * (1 - x_factor) * (1 - y_factor) + self.lo.x * (1 - x_factor) * y_factor + self.rb.x * x_factor * (1 - y_factor) + self.lb.x * x_factor * y_factor
+        y = self.ro.y * (1 - x_factor) * (1 - y_factor) + self.lo.y * (1 - x_factor) * y_factor + self.rb.y * x_factor * (1 - y_factor) + self.lb.y * x_factor * y_factor
 
-        return (x, y)
+        return x, y
 
     @staticmethod
     def load():
