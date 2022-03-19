@@ -67,16 +67,12 @@ class DobotFun(Dobot):
                 self.error(f"Alarm: {', '.join(map(str, alarms))}.")
                 sys.exit(1)
 
-
-
-
     def home(self):
         self.wacht_op(super().home())
 
     def move_to(self, x, y, z, r=0., mode=MODE_PTP.MOVJ_XYZ):
         self.debug(f"move_to x={x}, y={y}, z={z}, r={r}")
         self.wacht_op(super().move_to(x,y,z,r,mode))
-        self.debug(self.format_pose())
 
 
 
