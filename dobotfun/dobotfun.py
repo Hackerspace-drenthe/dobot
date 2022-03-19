@@ -39,6 +39,9 @@ class DobotFun(Dobot):
 
         if id is None:
             self.id=port
+        else:
+            self.id=id
+
         self.verbose(f"Connectie maken naar poort {port} ")
         super().__init__(port=port)
 

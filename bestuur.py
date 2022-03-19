@@ -3,7 +3,7 @@
 from dobotfun.dobotfun import DobotFun
 from pydobot.keyboardcontrol import KeyboardControl
 
-d=DobotFun()
+d=DobotFun(None, "Dobot")
 
 k=KeyboardControl(d)
 k.get()

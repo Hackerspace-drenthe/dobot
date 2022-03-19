@@ -15,8 +15,22 @@ class KeyboardControl:
     def get(self):
         """lets user control until enter or esc is pressed. when enter is pressed the selected position is returned"""
 
-        self.p = self.d.get_pose().position
+        print(
+            """
+Besturing:
+ * x en y coordinaten: Pijltjes toetsen
+ * Hoogtee           : PgUp/PgDn
+ * Draaien           : , en .
+ * Snelheid          : getal 1 t/m 5
+ * Calibreren        : h 
+ * Ga naar thuis     : r
+ * Sla thuis op      : s
+ * Stoppen           : ESC
+ * Opslaan           : ENTER
+"""
+        )
 
+        self.p = self.d.get_pose().position
 
         self.step_size = 10
 
