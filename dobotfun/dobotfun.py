@@ -59,8 +59,8 @@ class DobotFun(Dobot):
         self.alarm_check=True
         self.suck_delay=0.25
 
-        #gevoeligheid van lost step detectie
-        self.set_lost_step_params(2)
+        #gevoeligheid van lost step detectie (2 is te krap)
+        self.set_lost_step_params(3)
         # self.home()
 
     def format_pose(self):
