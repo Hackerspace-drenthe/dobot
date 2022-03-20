@@ -66,12 +66,15 @@ class PalletFun():
             (1, 2),
             (2, 1),
             (1, 3),
+
             (2, 2),
             (3, 1),
             (1, 4),
+
             (2, 3),
             (3, 2),
-            (4, 1),
+
+            # (4, 1),
             (2, 4),
             (3, 3),
             (4, 2),
@@ -84,7 +87,7 @@ class PalletFun():
 
         self.locaties = []
 
-        self.pak_marge = 6
+        self.pak_marge = 10
 
     def pak_pallet(self, r, k):
         """pak iets heel voorzichtig van pallet"""
@@ -107,7 +110,7 @@ class PalletFun():
         self.d.move_to(x + self.pak_marge, y + self.pak_marge, self.p.z+ self.pak_marge)
         self.d.langzaam()
         self.d.move_to(x, y, self.p.z + self.pak_marge)
-        self.d.move_to(x, y, self.p.z )
+        self.d.move_to(x-1, y-1, self.p.z )
         self.d.los()
         self.d.move_to(x - 2, y - 2, self.p.z)
         self.d.move_to(x - 2, y - 2, self.p.z + self.pak_marge)
