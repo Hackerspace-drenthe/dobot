@@ -1,5 +1,6 @@
 #GPL3.0 - (c)edwin@datux.nl
 import sys
+from time import sleep
 
 from serial.tools import list_ports
 
@@ -55,6 +56,7 @@ class DobotFun(Dobot):
 
         self.suck(False)
         self.alarm_check=True
+        self.suck_delay=1
 
     def format_pose(self):
         p=self.get_pose()
@@ -81,6 +83,14 @@ class DobotFun(Dobot):
                     sys.exit(1)
 
         self.show_progress("Klaar")
+
+    def vast(self):
+        self.wacht_op(self.suck(True))
+        sleep(self.suck_delay)
+
+    def los(self):
+        self.wacht_op(self.suck(False))
+        sleep(self.suck_delay)
 
     def home(self):
         self.verbose("Thuis positie opzoeken...")
@@ -119,3 +129,10 @@ class DobotFun(Dobot):
 
     def get_pos(self):
         return self.get_pose().position
+
+
+    def snel(self):
+        self.speed(100,100)
+
+    def langzaam(self):
+        self.speed(10,10)

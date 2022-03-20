@@ -1,3 +1,4 @@
+
 #GPL3.0 - (c)edwin@datux.nl
 import pickle
 import sys
@@ -8,6 +9,7 @@ from pydobot.dobot import Position
 
 
 class PalletConfig:
+    """berekening en configuratie van Pallet. een 4x4 grid van blokjes. gebruikt pallet_leer.py om te calibreren"""
 
     def __init__(self):
         self.grid_size=4
@@ -49,36 +51,15 @@ class PalletConfig:
 
 
 class PalletFun():
-    def __init__(self):
+    def __init__(self, dobot):
 
-        suck_delay = 1
+        self.p=PalletConfig.load()
+        self.p.print()
 
-        # links boven
-        Xlb = -4.6
-        Ylb = -270
+        self.d=dobot
 
-        # rechts boven
-        Xrb = -7.4
-        Yrb = -195.0
 
-        # links onder
-        Xlo = 70.9
-        Ylo = -268.5
-
-        # rechts onder
-        Xro = 65.5
-        Yro = -195.1
-
-        # hoeveel x hoeveel blokken is de pallet?
-        pallet_grid = 4
-
-        grond_z = -47
-
-        blok_size = 25
-
-        pallet_filled = [True] * (pallet_grid * pallet_grid)
-
-        pallet_aanwezig = [
+        self.pallet_aanwezig = [
             (1, 1),
             (1, 2),
             (2, 1),
@@ -97,29 +78,18 @@ class PalletFun():
             (4, 4)
         ]
 
-        pallet_in_gebruik = []
+        self.pallet_in_gebruik = []
 
-        locaties = []
+        self.locaties = []
 
-
-        #     <--- Y + -->
-        #  ^  lb      rb
-        #  |
-        #  X                 RIJ
-        #  +                 RIJ
-        #  V  lo      ro     RIJ
-        #
-        #   KOL    KOL   KOL  1,1
+    def pak_pallet(self, r, k):
+        (x, y) = self.p.pos(r, k)
+        self.d.hop_to(x,y,self.p.z)
+        self.d.vast()
+        self.d.langzaam()
+        self.d.move_to(x+5,y+5,self.p.z-5)
 
 
-
-    def pak_pallet(r, k):
-        (x, y) = calc_pallet(r, k)
-        device.move_to(x, y, grond_z + 50)
-        device.move_to(x, y, grond_z)
-        device.wait_for_cmd(device.suck(True))
-        sleep(suck_delay)
-        device.move_to(x + 5, y + 5, grond_z + 50)
 
 
     def zet_pallet(r, k):
