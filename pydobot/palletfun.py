@@ -84,7 +84,7 @@ class PalletFun():
 
         self.locaties = []
 
-        self.pak_marge = 5
+        self.pak_marge = 6
 
     def pak_pallet(self, r, k):
         """pak iets heel voorzichtig van pallet"""
@@ -99,14 +99,18 @@ class PalletFun():
 
     def zet_pallet(self, r, k):
         (x, y) = self.p.pos(r, k)
-        self.d.move_to(x + self.pak_marge, y + self.pak_marge, self.p.z + self.block_size + self.pak_marge)
+
+        #zorg dat we hoog genoeg blijven
+        pos=self.d.get_pos()
+
+        self.d.move_to(x + self.pak_marge, y + self.pak_marge, pos.z)
         self.d.move_to(x + self.pak_marge, y + self.pak_marge, self.p.z+ self.pak_marge)
         self.d.langzaam()
         self.d.move_to(x, y, self.p.z + self.pak_marge)
         self.d.move_to(x, y, self.p.z )
         self.d.los()
-        self.d.move_to(x - 1, y - 1, self.p.z)
-        self.d.move_to(x - 1, y - 1, self.p.z + self.pak_marge)
+        self.d.move_to(x - 2, y - 2, self.p.z)
+        self.d.move_to(x - 2, y - 2, self.p.z + self.pak_marge)
         self.d.snel()
 
     def pak_pallet_volgende(self):

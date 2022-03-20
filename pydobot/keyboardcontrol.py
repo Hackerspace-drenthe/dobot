@@ -92,6 +92,9 @@ Besturing:
                 elif key.char == '5':
                     self.step_size = 10
                     self.d.verbose(f"Speed = {self.step_size}mm")
+                elif key.char == '6':
+                    self.step_size = 25
+                    self.d.verbose(f"Speed = {self.step_size}mm")
 
         def on_release(key):
             # print('special key released: {0}'.format(
