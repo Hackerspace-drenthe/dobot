@@ -496,6 +496,26 @@ class Dobot:
         msg.params.extend(bytearray(struct.pack('f', r)))
         return self._send_command(msg)
 
+    def set_angle_sensor_static_error(self, rear, front):
+        msg = Message()
+        msg.id = 140
+        msg.ctrl = 0x03
+        msg.params = bytearray([])
+        msg.params.extend(bytearray(struct.pack('f', rear)))
+        msg.params.extend(bytearray(struct.pack('f', front)))
+        self.wait_for_cmd(self._extract_cmd_index(self._send_command(msg)))
+
+        # return self._send_command(msg)
+
+    def get_angle_sensor_static_error(self):
+        msg = Message()
+        msg.id = 140
+        msg.params = bytearray([])
+        response = self._send_command(msg)
+        rear=struct.unpack_from('f', response.params, 0)[0]
+        front=struct.unpack_from('f', response.params, 4)[0]
+        return (rear, front)
+
     def _set_home_coordinate(self, x, y, z, r):
         msg = Message()
         msg.id = 30

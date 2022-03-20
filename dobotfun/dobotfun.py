@@ -59,6 +59,7 @@ class DobotFun(Dobot):
         self.alarm_check=True
         self.suck_delay=0.25
 
+
         #gevoeligheid van lost step detectie (2 is te krap)
         self.set_lost_step_params(3)
         # self.home()
@@ -148,12 +149,13 @@ class DobotFun(Dobot):
         return id
 
     def __del__(self):
-        if self.id:
-            try:
-                self.verbose(f"Connectie naar robot {self.id} gesloten")
-                self.los()
-            except:
-                pass
+        pass
+        # if self.id:
+        #     try:
+        #         self.verbose(f"Connectie naar robot {self.id} gesloten")
+        #         self.los()
+        #     except:
+        #         pass
 
 
     def get_pos(self):
