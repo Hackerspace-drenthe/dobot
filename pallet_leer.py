@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 from dobotfun.dobotfun import DobotFun
-from pydobot.dobot import Position
-from pydobot.keyboardcontrol import KeyboardControl
-import pickle
+from dobotfun.keyboardcontrol import KeyboardControl
 
-from pydobot.palletfun import PalletConfig
+from dobotfun.palletfun import PalletConfig
 
 config=PalletConfig.load()
 

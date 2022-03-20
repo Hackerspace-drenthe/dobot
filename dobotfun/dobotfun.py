@@ -1,7 +1,8 @@
 #GPL3.0 - (c)edwin@datux.nl
 import sys
-from time import sleep
+from time import sleep, time
 
+import colorama
 from serial.tools import list_ports
 
 from .LogConsole import LogConsole
@@ -70,9 +71,12 @@ class DobotFun(Dobot):
     def wacht_op(self, cmd_id):
         """wacht op command en toon mooie progress info op beeld. ook error handeling"""
 
+        last_change=time()
+        prev_pose=self.get_pose().position
+
         current_cmd_id = self._get_queued_cmd_current_index()
         while cmd_id > current_cmd_id:
-            self.show_progress(f"Commando {current_cmd_id}/{cmd_id}")
+            self.show_progress(colorama.Back.RED + f"Bezig... {current_cmd_id}/{cmd_id}" + colorama.Style.RESET_ALL)
             current_cmd_id = self._get_queued_cmd_current_index()
 
             #alarm?
@@ -82,7 +86,22 @@ class DobotFun(Dobot):
                     self.error(f"Alarm: {', '.join(map(str, alarms))}.")
                     sys.exit(1)
 
-        self.show_progress("Klaar")
+            #still moving?
+            p=self.get_pose().position
+            if (p.x!=prev_pose.x or p.y!=prev_pose.y or p.z!=prev_pose.z or p.r!=prev_pose.r):
+                last_change=time()
+                prev_pose=p
+
+            #te lang niet verplaatst? dit gebeurd door de lost step detectie, robot komt dan niet op zn doel plaats.
+            if time()-last_change>1:
+
+                self.error(f"Timeout! (ergens tegenaan gekomen?) ")
+                sys.exit(1)
+                return
+
+
+
+        self.show_progress(colorama.Back.GREEN + "Klaar"+colorama.Style.RESET_ALL)
 
     def vast(self):
         self.wacht_op(self.suck(True))
@@ -97,7 +116,9 @@ class DobotFun(Dobot):
         self.wacht_op(super().home())
 
     def move_to(self, x, y, z, r=0., mode=None):
-        self.debug(f"move_to x={x}, y={y}, z={z}, r={r}")
+        self.debug(f"move_to x={x:.2f}, y={y:.2f}, z={z:.2f}, r={r:.2f}")
+        #deze zorgt dat een command pas ready is als hij op de plaats van bestemming is (ongeveer)
+        self.set_lost_step_command()
         id = super().move_to(x, y, z, r, MODE_PTP.MOVJ_XYZ)
         self.wacht_op(id)
         return id
@@ -124,8 +145,11 @@ class DobotFun(Dobot):
 
     def __del__(self):
         if self.id:
-            self.verbose(f"Connectie naar robot {self.id} gesloten")
-            self.los()
+            try:
+                self.verbose(f"Connectie naar robot {self.id} gesloten")
+                self.los()
+            except e:
+                pass
 
 
     def get_pos(self):

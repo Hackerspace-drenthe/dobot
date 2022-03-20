@@ -1,3 +1,5 @@
+#NOTE: there are many forks and variants out there. We use https://github.com/ZdenekM/pydobot for now, since it worked and does alarms.
+#this one also can recover from an alarm, some https://github.com/AlexGustafsson/dobot-python.git cant
 import struct
 import math
 import logging
@@ -504,6 +506,19 @@ class Dobot:
         msg.params.extend(bytearray(struct.pack('f', z)))
         msg.params.extend(bytearray(struct.pack('f', r)))
         return self._send_command(msg)
+
+    # def set_homing_parameters(self, x, y, z, r, queue=True):
+    #     request = Message([0xAA, 0xAA], 2, 30, True, queue, [x, y, z, r], direction='out')
+
+    # request = Message([0xAA, 0xAA], 2, 171, True, False, [], direction='out')
+
+    def set_lost_step_command(self):
+        msg = Message()
+        msg.id = 171
+        msg.ctrl = 0x03
+        msg.params = bytearray([])
+        return self._send_command(msg)
+
 
     def _set_jog_coordinate_params(self, vx, vy, vz, vr, ax=100, ay=100, az=100, ar=100):
         msg = Message()

@@ -120,7 +120,9 @@ Besturing:
                         self.d.clear_alarms()
                         self.d.move_to_pos(self.p)
                         if self.d.get_alarms():
+
                             self.d.error("Alarm, ga terug of druk op 'r'")
+
             listener.join()
             termios.tcflush(sys.stdin, termios.TCIOFLUSH)
 
