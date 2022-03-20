@@ -56,7 +56,7 @@ class DobotFun(Dobot):
 
         self.suck(False)
         self.alarm_check=True
-        self.suck_delay=1
+        self.suck_delay=0.25
 
     def format_pose(self):
         p=self.get_pose()
@@ -86,7 +86,7 @@ class DobotFun(Dobot):
 
     def vast(self):
         self.wacht_op(self.suck(True))
-        sleep(self.suck_delay)
+        # sleep(self.suck_delay)
 
     def los(self):
         self.wacht_op(self.suck(False))

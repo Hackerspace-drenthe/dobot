@@ -92,9 +92,9 @@ class PalletFun():
         self.d.move_to(x, y, self.p.z + self.pak_marge + self.block_size)
         self.d.move_to(x, y, self.p.z )
         self.d.vast()
-        self.d.langzaam()
-        self.d.move_to(x, y , self.p.z + self.pak_marge)
-        self.d.snel()
+        # self.d.langzaam()
+        # self.d.move_to(x, y , self.p.z + self.pak_marge)
+        # self.d.snel()
         self.d.move_to(x + self.pak_marge, y + self.pak_marge, self.p.z + self.pak_marge + self.block_size)
 
     def zet_pallet(self, r, k):
@@ -136,12 +136,12 @@ class PalletFun():
         self.d.move_to_pos(pos)
 
         self.d.move_to(x, y, z+self.pak_marge+self.block_size)
-        self.d.move_to(x, y, z+self.pak_marge)
-        self.d.langzaam()
+        # self.d.move_to(x, y, z+self.pak_marge)
+        # self.d.langzaam()
         self.d.move_to(x, y, z)
         self.d.los()
         self.d.move_to(x, y, z+self.pak_marge)
-        self.d.snel()
+        # self.d.snel()
         self.locaties.insert(0, (x, y, laag))
 
     def pak(self,x, y, laag=0):
@@ -153,11 +153,11 @@ class PalletFun():
         self.d.move_to_pos(pos)
 
         self.d.move_to(x, y, z+self.pak_marge)
-        self.d.langzaam()
+        # self.d.langzaam()
         self.d.move_to(x, y, z)
         self.d.vast()
-        self.d.move_to(x, y, z+self.pak_marge)
-        self.d.snel()
+        # self.d.move_to(x, y, z+self.pak_marge)
+        # self.d.snel()
         self.d.move_to(x, y, z+self.pak_marge+self.block_size)
 
 
