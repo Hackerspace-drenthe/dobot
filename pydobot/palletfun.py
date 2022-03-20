@@ -31,8 +31,9 @@ class PalletConfig:
         x_factor = (r - 1) / (self.grid_size - 1)
         y_factor = (k - 1) / (self.grid_size - 1)
 
-        x = self.ro.x * (1 - x_factor) * (1 - y_factor) + self.lo.x * (1 - x_factor) * y_factor + self.rb.x * x_factor * (1 - y_factor) + self.lb.x * x_factor * y_factor
-        y = self.ro.y * (1 - x_factor) * (1 - y_factor) + self.lo.y * (1 - x_factor) * y_factor + self.rb.y * x_factor * (1 - y_factor) + self.lb.y * x_factor * y_factor
+            # links boven                                 rechts boven                            #  links onder                          # rechts onder
+        x = self.lb.x * (1 - x_factor) * (1 - y_factor) + self.rb.x * (1 - x_factor) * y_factor + self.lo.x * x_factor * (1 - y_factor) + self.ro.x * x_factor * y_factor
+        y = self.lb.y * (1 - x_factor) * (1 - y_factor) + self.rb.y * (1 - x_factor) * y_factor + self.lo.y * x_factor * (1 - y_factor) + self.ro.y * x_factor * y_factor
 
         return x, y
 
