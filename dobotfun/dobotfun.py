@@ -125,6 +125,7 @@ class DobotFun(Dobot):
     def __del__(self):
         if self.id:
             self.verbose(f"Connectie naar robot {self.id} gesloten")
+            self.los()
 
 
     def get_pos(self):
@@ -135,4 +136,4 @@ class DobotFun(Dobot):
         self.speed(100,100)
 
     def langzaam(self):
-        self.speed(10,10)
+        self.speed(5,5)

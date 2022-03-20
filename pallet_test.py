@@ -11,4 +11,9 @@ dobot=DobotFun()
 pallet=PalletFun(dobot)
 
 
-pallet.pak_pallet(1,1)
+pallet.pak_pallet_volgende()
+pallet.zet(200,0)
+
+pallet.pak_pallet_volgende()
+pallet.zet(200,30)
+pallet.opruimen()

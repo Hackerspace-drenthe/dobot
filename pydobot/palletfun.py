@@ -1,5 +1,4 @@
-
-#GPL3.0 - (c)edwin@datux.nl
+# GPL3.0 - (c)edwin@datux.nl
 import pickle
 import sys
 import os
@@ -12,16 +11,16 @@ class PalletConfig:
     """berekening en configuratie van Pallet. een 4x4 grid van blokjes. gebruikt pallet_leer.py om te calibreren"""
 
     def __init__(self):
-        self.grid_size=4
-        self.z=-47
-        self.lb=Position()
-        self.rb=Position()
-        self.lo=Position()
-        self.ro=Position()
+        self.grid_size = 4
+        self.z = -47
+        self.lb = Position()
+        self.rb = Position()
+        self.lo = Position()
+        self.ro = Position()
 
     def print(self):
-        print ("")
-        print (f"Pallet config {self.grid_size} x {self.grid_size}:")
+        print("")
+        print(f"Pallet config {self.grid_size} x {self.grid_size}:")
         print(f" 1 LB: x{self.lb.x:.2f} y{self.lb.y:<2.2f}\t2 RB: x{self.rb.x:.2f} y{self.rb.y:.2f}")
         print(f" 3 LO: x{self.lo.x:.2f} y{self.lo.y:<2.2f}\t4 RO: x{self.ro.x:.2f} y{self.ro.y:.2f}")
         print(f"Z hoogte: {self.z:.2f}")
@@ -31,34 +30,36 @@ class PalletConfig:
         x_factor = (r - 1) / (self.grid_size - 1)
         y_factor = (k - 1) / (self.grid_size - 1)
 
-            # links boven                                 rechts boven                            #  links onder                          # rechts onder
-        x = self.lb.x * (1 - x_factor) * (1 - y_factor) + self.rb.x * (1 - x_factor) * y_factor + self.lo.x * x_factor * (1 - y_factor) + self.ro.x * x_factor * y_factor
-        y = self.lb.y * (1 - x_factor) * (1 - y_factor) + self.rb.y * (1 - x_factor) * y_factor + self.lo.y * x_factor * (1 - y_factor) + self.ro.y * x_factor * y_factor
+        # links boven                                 rechts boven                            #  links onder                          # rechts onder
+        x = self.lb.x * (1 - x_factor) * (1 - y_factor) + self.rb.x * (
+                1 - x_factor) * y_factor + self.lo.x * x_factor * (1 - y_factor) + self.ro.x * x_factor * y_factor
+        y = self.lb.y * (1 - x_factor) * (1 - y_factor) + self.rb.y * (
+                1 - x_factor) * y_factor + self.lo.y * x_factor * (1 - y_factor) + self.ro.y * x_factor * y_factor
 
         return x, y
 
     @staticmethod
     def load():
         if os.path.exists("pallet.config"):
-            with open('pallet.config','rb') as f:
+            with open('pallet.config', 'rb') as f:
                 return pickle.load(f)
         else:
             return PalletConfig()
 
     def save(self):
-        with open('pallet.config','wb') as f:
-            pickle.dump(self,f)
-        print ("config saved")
+        with open('pallet.config', 'wb') as f:
+            pickle.dump(self, f)
+        print("config saved")
 
 
 class PalletFun():
     def __init__(self, dobot):
-
-        self.p=PalletConfig.load()
+        self.p = PalletConfig.load()
         self.p.print()
 
-        self.d=dobot
+        self.d = dobot
 
+        self.block_size = 25
 
         self.pallet_aanwezig = [
             (1, 1),
@@ -83,65 +84,86 @@ class PalletFun():
 
         self.locaties = []
 
+        self.pak_marge = 5
+
     def pak_pallet(self, r, k):
+        """pak iets heel voorzichtig van pallet"""
         (x, y) = self.p.pos(r, k)
-        self.d.hop_to(x,y,self.p.z)
+        self.d.move_to(x, y, self.p.z + self.pak_marge + self.block_size)
+        self.d.move_to(x, y, self.p.z )
         self.d.vast()
         self.d.langzaam()
-        self.d.move_to(x+5,y+5,self.p.z-5)
+        self.d.move_to(x, y , self.p.z + self.pak_marge)
+        self.d.snel()
+        self.d.move_to(x + self.pak_marge, y + self.pak_marge, self.p.z + self.pak_marge + self.block_size)
+
+    def zet_pallet(self, r, k):
+        (x, y) = self.p.pos(r, k)
+        self.d.move_to(x + self.pak_marge, y + self.pak_marge, self.p.z + self.block_size + self.pak_marge)
+        self.d.move_to(x + self.pak_marge, y + self.pak_marge, self.p.z+ self.pak_marge)
+        self.d.langzaam()
+        self.d.move_to(x, y, self.p.z + self.pak_marge)
+        self.d.move_to(x, y, self.p.z )
+        self.d.los()
+        self.d.move_to(x - 1, y - 1, self.p.z)
+        self.d.move_to(x - 1, y - 1, self.p.z + self.pak_marge)
+        self.d.snel()
+
+    def pak_pallet_volgende(self):
+        """pak eerst volgende blokje van pallet"""
+        (r, k) = self.pallet_aanwezig.pop(0)
+        self.pallet_in_gebruik.insert(0, (r, k))
+        self.pak_pallet(r, k)
+
+    def zet_pallet_volgende(self):
+        """zet blokjes op eerst volgende vrije plek op pallet"""
+        (r, k) = self.pallet_in_gebruik.pop(0)
+        self.pallet_aanwezig.insert(0, (r, k))
+        self.zet_pallet(r, k)
+
+    def zet(self, x, y, laag=0):
+        """zet neer op een plek en onthou positie voor cleanup"""
+
+        z=self.p.z + self.block_size*laag
+
+        #zorg dat we hoog genoeg zitten voor we wat doen
+        pos=self.d.get_pos()
+        pos.z=z+self.pak_marge+self.block_size
+        self.d.move_to_pos(pos)
+
+        self.d.move_to(x, y, z+self.pak_marge+self.block_size)
+        self.d.move_to(x, y, z+self.pak_marge)
+        self.d.langzaam()
+        self.d.move_to(x, y, z)
+        self.d.los()
+        self.d.move_to(x, y, z+self.pak_marge)
+        self.d.snel()
+        self.locaties.insert(0, (x, y, laag))
+
+    def pak(self,x, y, laag=0):
+        z=self.p.z + self.block_size*laag
+
+        #zorg dat we hoog genoeg zitten voor we wat doen
+        pos=self.d.get_pos()
+        pos.z=z+self.pak_marge
+        self.d.move_to_pos(pos)
+
+        self.d.move_to(x, y, z+self.pak_marge)
+        self.d.langzaam()
+        self.d.move_to(x, y, z)
+        self.d.vast()
+        self.d.move_to(x, y, z+self.pak_marge)
+        self.d.snel()
+        self.d.move_to(x, y, z+self.pak_marge+self.block_size)
 
 
 
-
-    def zet_pallet(r, k):
-        (x, y) = calc_pallet(r, k)
-        device.move_to(x + 5, y + 5, grond_z + 50)
-        device.move_to(x + 5, y + 5, grond_z)
-        device.speed(10, 10)
-        device.move_to(x, y, grond_z)
-        device.wait_for_cmd(device.suck(False))
-        device.wait_for_cmd(device.move_to(x - 1, y - 1, grond_z))
-        device.speed(100, 100)
-        sleep(suck_delay)
-        device.wait_for_cmd(device.move_to(x, y, grond_z + 50))
-
-
-    def zet(x, y, z):
-        device.move_to(x, y, z + 30)
-        device.move_to(x, y, z)
-        device.wait_for_cmd(device.suck(False))
-        sleep(suck_delay)
-        device.speed(10, 10)
-        device.move_to(x, y, z + 30)
-        device.speed(100, 100)
-        locaties.insert(0, (x, y, z))
-
-
-    def cleanup():
-        for locatie in locaties:
-            pak(locatie[0], locatie[1], locatie[2])
-            zet_pallet_volgende()
-        locaties.clear()
-
-
-    def pak(x, y, z):
-        device.move_to(x, y, z + 30)
-        device.move_to(x, y, z)
-        device.wait_for_cmd(device.suck(True))
-        sleep(suck_delay)
-        device.move_to(x, y, z + 30)
-
-
-    def pak_pallet_volgende():
-        (r, k) = pallet_aanwezig.pop(0)
-        pallet_in_gebruik.insert(0, (r, k))
-        pak_pallet(r, k)
-
-
-    def zet_pallet_volgende():
-        (r, k) = pallet_in_gebruik.pop(0)
-        pallet_aanwezig.insert(0, (r, k))
-        zet_pallet(r, k)
+    def opruimen(self):
+        for locatie in self.locaties:
+            ( x,y,laag )=locatie
+            self.pak(x,y,laag)
+            self.zet_pallet_volgende()
+        self.locaties.clear()
 
 
 # print("Pallet coords:")
