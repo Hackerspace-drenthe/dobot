@@ -513,10 +513,21 @@ class Dobot:
     # request = Message([0xAA, 0xAA], 2, 171, True, False, [], direction='out')
 
     def set_lost_step_command(self):
+        """het move commando wat je na dit commando verstuurd word gecontroleerd via de encoders. als hij niet op zn plek komt krijg je een timeout via wacht_op()"""
         msg = Message()
         msg.id = 171
         msg.ctrl = 0x03
         msg.params = bytearray([])
+        return self._send_command(msg)
+
+    def set_lost_step_params(self, param):
+        msg = Message()
+        msg.id = 170
+        msg.ctrl = 0x03
+        msg.params = bytearray([])
+        msg.params.extend(bytearray(struct.pack('f', param)))
+
+
         return self._send_command(msg)
 
 

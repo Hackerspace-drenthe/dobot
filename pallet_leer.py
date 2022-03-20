@@ -15,10 +15,10 @@ while True:
 
     print()
     print("Hoofd menu:")
-    print("  1 t/m  4   : Calibreer cooridnaat")
-    print(" g1 t/m g4   : Ga naar coordinaat")
+    print("  1 t/m  4   : Ga naar cooridnaat (en calibreer)")
+    # print(" g1 t/m g4   : Ga naar coordinaat")
     print("  z          : Calibreer Z hoogte")
-    print(" gz          : Ga naar Z hoogte")
+    # print(" gz          : Ga naar Z hoogte")
     print(" <r>,<k>     : Ga naar pallet rij, kolom (om te testen of het werkt)")
     print(" h           : Zoek thuispostitie")
     i=input("> ")
@@ -27,6 +27,7 @@ while True:
 
     if i=='1':
         print ("Calibreer links boven")
+        dobot.hop_to_pos(config.lb)
         p=keyboard_control.get()
         if p:
             config.lb=p
@@ -34,6 +35,7 @@ while True:
 
     if i=='2':
         print ("Calibreer rechts boven")
+        dobot.hop_to_pos(config.rb)
         p=keyboard_control.get()
         if p:
             config.rb=p
@@ -41,6 +43,7 @@ while True:
 
     if i=='3':
         print ("Calibreer links onder")
+        dobot.hop_to_pos(config.lo)
         p=keyboard_control.get()
         if p:
             config.lo=p
@@ -48,6 +51,7 @@ while True:
 
     if i=='4':
         print ("Calibreer rechts onder")
+        dobot.hop_to_pos(config.ro)
         p=keyboard_control.get()
         if p:
             config.ro=p
@@ -56,6 +60,9 @@ while True:
     if i=='z':
         print ("Calibreer z hoogte")
         p=keyboard_control.get()
+        pose=dobot.get_pose().position
+        pose.z=config.z
+        dobot.hop_to_pos(pose)
         if p:
             config.z=p.z
             config.save()

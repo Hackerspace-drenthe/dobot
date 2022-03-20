@@ -12,7 +12,7 @@ class PalletConfig:
 
     def __init__(self):
         self.grid_size = 4
-        self.z = -47
+        self.z = -37
         self.lb = Position()
         self.rb = Position()
         self.lo = Position()

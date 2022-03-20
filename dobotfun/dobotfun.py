@@ -59,6 +59,10 @@ class DobotFun(Dobot):
         self.alarm_check=True
         self.suck_delay=0.25
 
+        #gevoeligheid van lost step detectie
+        self.set_lost_step_params(2)
+        # self.home()
+
     def format_pose(self):
         p=self.get_pose()
         return f"x={p.position.x:.2f}, y={p.position.y:.2f}, z={p.position.z:.2f}, r={p.position.r:.2f}"
@@ -93,7 +97,7 @@ class DobotFun(Dobot):
                 prev_pose=p
 
             #te lang niet verplaatst? dit gebeurd door de lost step detectie, robot komt dan niet op zn doel plaats.
-            if time()-last_change>1:
+            if time()-last_change>5:
 
                 self.error(f"Timeout! (ergens tegenaan gekomen?) ")
                 sys.exit(1)
@@ -148,7 +152,7 @@ class DobotFun(Dobot):
             try:
                 self.verbose(f"Connectie naar robot {self.id} gesloten")
                 self.los()
-            except e:
+            except:
                 pass
 
 
