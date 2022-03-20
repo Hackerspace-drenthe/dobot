@@ -33,7 +33,7 @@ Besturing:
 
         self.p = self.d.get_pose().position
 
-        self.step_size = 10
+        self.step_size = 1
 
         self.result = None
         self.changed = True
