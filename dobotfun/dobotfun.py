@@ -56,13 +56,13 @@ class DobotFun(Dobot):
         super().__init__(port=port)
 
         self.suck_delay=0.5
+        self.alarm_check=True
         self.los()
         self.sucking=False
-        self.alarm_check=True
 
 
         #gevoeligheid van lost step detectie (2 is te krap)
-        self.set_lost_step_params(4)
+        self.set_lost_step_params(5)
         # self.home()
 
     def format_pose(self):
@@ -112,7 +112,7 @@ class DobotFun(Dobot):
     def vast(self):
         self.sucking=True
         self.wacht_op(self.suck(True))
-        # sleep(self.suck_delay)
+        sleep(self.suck_delay)
 
     def los(self):
         self.sucking=False

@@ -59,7 +59,7 @@ def bestuur_positie( r,k ):
     global demo
     if demo:
 
-        dobot.verbose("Do you want to play a game?")
+        dobot.verbose("SHALL WE PLAY A GAME?")
         i, o, e = select.select([sys.stdin], [], [], 30)
         if i:
             dobot.verbose("OK")
@@ -113,6 +113,7 @@ while True:
     board, winner = EMPTY_BOARD, None
 
     demo=True
+    dobot.home()
 
     while winner is None:
         print(get_printable_board(board))
@@ -159,4 +160,3 @@ while True:
     sleep(5)
     dobot.verbose("Aan het opruimen...")
     pallet.opruimen()
-    dobot.home()
