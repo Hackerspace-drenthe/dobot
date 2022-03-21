@@ -69,6 +69,8 @@ Besturing:
                     self.p.z = 0
                     self.p.r = 0
                 elif key.char == 'h':
+                    p = self.d.get_pose().position
+                    p.z=p.z+30
                     self.d.home()
                 elif key.char == 's':
                     self.d.verbose("Nieuwe thuispositie opgeslagen")

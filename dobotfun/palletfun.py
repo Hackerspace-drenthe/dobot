@@ -54,34 +54,18 @@ class PalletConfig:
 
 class PalletFun():
     def __init__(self, dobot):
-        self.p = PalletConfig.load()
-        self.p.print()
+        self.pallet_config = PalletConfig.load()
+        # self.pallet_config.print()
 
         self.d = dobot
 
         self.block_size = 25
 
-        self.pallet_aanwezig = [
-            (1, 1),
-            (1, 2),
-            (2, 1),
-            (1, 3),
+        self.pallet_aanwezig = []
 
-            (2, 2),
-            (3, 1),
-            (1, 4),
-
-            (2, 3),
-            (3, 2),
-
-            (4, 1),
-            (2, 4),
-            (3, 3),
-            (4, 2),
-            (3, 4),
-            (4, 3),
-            (4, 4)
-        ]
+        for r in range(1,5):
+            for k in range(1,5):
+                self.pallet_aanwezig.append( (r,k) )
 
         self.pallet_in_gebruik = []
 
@@ -91,29 +75,29 @@ class PalletFun():
 
     def pak_pallet(self, r, k):
         """pak iets heel voorzichtig van pallet"""
-        (x, y) = self.p.pos(r, k)
-        self.d.move_to(x, y, self.p.z + self.pak_marge + self.block_size)
-        self.d.move_to(x, y, self.p.z )
+        (x, y) = self.pallet_config.pos(r, k)
+        self.d.move_to(x, y, self.pallet_config.z + self.pak_marge + self.block_size)
+        self.d.move_to(x, y, self.pallet_config.z)
         self.d.vast()
         # self.d.langzaam()
         # self.d.move_to(x, y , self.p.z + self.pak_marge)
         # self.d.snel()
-        self.d.move_to(x + self.pak_marge, y + self.pak_marge, self.p.z + self.pak_marge + self.block_size)
+        self.d.move_to(x + self.pak_marge, y + self.pak_marge, self.pallet_config.z + self.pak_marge + self.block_size)
 
     def zet_pallet(self, r, k):
-        (x, y) = self.p.pos(r, k)
+        (x, y) = self.pallet_config.pos(r, k)
 
         #zorg dat we hoog genoeg blijven
         pos=self.d.get_pos()
 
         self.d.move_to(x + self.pak_marge, y + self.pak_marge, pos.z)
-        self.d.move_to(x + self.pak_marge, y + self.pak_marge, self.p.z+ self.pak_marge)
+        self.d.move_to(x + self.pak_marge, y + self.pak_marge, self.pallet_config.z + self.pak_marge)
         self.d.langzaam()
-        self.d.move_to(x, y, self.p.z + self.pak_marge)
-        self.d.move_to(x-1, y-1, self.p.z )
+        self.d.move_to(x, y, self.pallet_config.z + self.pak_marge)
+        self.d.move_to(x - 1, y - 1, self.pallet_config.z)
         self.d.los()
-        self.d.move_to(x - 2, y - 2, self.p.z)
-        self.d.move_to(x - 2, y - 2, self.p.z + self.pak_marge)
+        self.d.move_to(x - 2, y - 2, self.pallet_config.z)
+        self.d.move_to(x - 2, y - 2, self.pallet_config.z + self.pak_marge)
         self.d.snel()
 
     def pak_pallet_volgende(self):
@@ -131,7 +115,7 @@ class PalletFun():
     def zet(self, x, y, laag=0):
         """zet neer op een plek en onthou positie voor cleanup"""
 
-        z=self.p.z + self.block_size*laag
+        z= self.pallet_config.z + self.block_size * laag
 
         #zorg dat we hoog genoeg zitten voor we wat doen
         pos=self.d.get_pos()
@@ -148,7 +132,7 @@ class PalletFun():
         self.locaties.insert(0, (x, y, laag))
 
     def pak(self,x, y, laag=0):
-        z=self.p.z + self.block_size*laag
+        z= self.pallet_config.z + self.block_size * laag
 
         #zorg dat we hoog genoeg zitten voor we wat doen
         pos=self.d.get_pos()
