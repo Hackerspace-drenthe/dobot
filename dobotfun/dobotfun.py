@@ -55,7 +55,7 @@ class DobotFun(Dobot):
         self.verbose(f"Connectie maken naar poort {port} ")
         super().__init__(port=port)
 
-        self.suck_delay=0.25
+        self.suck_delay=0.5
         self.los()
         self.sucking=False
         self.alarm_check=True
