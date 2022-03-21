@@ -14,7 +14,8 @@ from tictactoe import *
 #
 # signal.signal(signal.SIGALRM, interrupted)
 # signal.alarm(3)
-
+#
+# play_console_game()
 
 import readchar
 
@@ -74,7 +75,8 @@ def bestuur_positie( r,k ):
 
     pallet.pak_pallet_volgende()
 
-    dobot.verbose("Gebruikt pijltjes toetsen om een locatie te kiezen en druk op ENTER. (d=demo mode, q=quit)")
+    dobot.verbose("Gebruikt pijltjes toetsen om een locatie te kiezen en druk op ENTER. ")
+    dobot.verbose("(d=demo mode, q=stoppen, h=herstarten")
     while True:
         (x,y)=calc_grid_positie( r, k )
         dobot.move_to_nowait( x,y, optil_z )
@@ -98,6 +100,8 @@ def bestuur_positie( r,k ):
             return ( r, k )
         elif key == 'q':
             sys.exit(1)
+        elif key == 'h':
+            return None
 
         #limiteer bereik
         r=max(-2,r)
@@ -113,16 +117,22 @@ while True:
     board, winner = EMPTY_BOARD, None
 
     demo=True
-    dobot.home()
+    herstart=False
+    # dobot.home()
 
-    while winner is None:
+    while winner is None and not herstart:
         print(get_printable_board(board))
 
         r=0
         k=0
-        while True:
+        while not herstart:
             try:
-                (r,k)=bestuur_positie(r,k)
+                p=bestuur_positie(r,k)
+                if p is None:
+                    herstart=True
+                    break
+                (r,k) = p
+
                 board, winner = play(board, 'X', k, r)
 
                 #gelukt, plaats blokje
