@@ -91,9 +91,9 @@ class PalletFun():
         pos=self.d.get_pos()
 
         self.d.move_to(x + self.pak_marge, y + self.pak_marge, pos.z)
-        self.d.move_to(x + self.pak_marge, y + self.pak_marge, self.pallet_config.z + self.pak_marge)
+        self.d.move_to(x + self.pak_marge, y + self.pak_marge, self.pallet_config.z + 3)
         self.d.langzaam()
-        self.d.move_to(x, y, self.pallet_config.z + self.pak_marge)
+        self.d.move_to(x, y, self.pallet_config.z + 3)
         self.d.move_to(x - 1, y - 1, self.pallet_config.z)
         self.d.los()
         self.d.move_to(x - 2, y - 2, self.pallet_config.z)

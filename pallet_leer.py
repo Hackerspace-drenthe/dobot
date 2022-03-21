@@ -59,10 +59,10 @@ while True:
 
     if i=='z':
         print ("Calibreer z hoogte")
-        p=keyboard_control.get()
         pose=dobot.get_pose().position
         pose.z=config.z
         dobot.hop_to_pos(pose)
+        p=keyboard_control.get()
         if p:
             config.z=p.z
             config.save()

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import signal
 import sys
+from time import sleep
 
 from dobotfun.dobotfun import DobotFun
 
@@ -20,7 +21,7 @@ import readchar
 dobot = DobotFun()
 pallet = PalletFun(dobot)
 
-block_size = 28
+block_size = 29
 x_start = 135
 y_start = -45
 optil_z = pallet.pallet_config.z + block_size + 10
@@ -29,8 +30,26 @@ optil_z = pallet.pallet_config.z + block_size + 10
 def calc_grid_positie(r, k):
     return (x_start + (r * block_size), y_start + (k * block_size))
 
+def sad():
+    # :( verloren
+    dobot.move_to(156, -211, pallet.pallet_config.z)
+    dobot.speed(5,1)
+    dobot.move_to(156, -211, pallet.pallet_config.z-10)
+    dobot.snel()
+
+def happy():
+    # :)  gewonnne \o/
+    dobot.move_to(165, 0, 160)
+    dobot.move_to(165, 0, 160)
+    dobot.move_to(165, 0, 140)
+    dobot.move_to(165, 0, 160)
+    dobot.move_to(165, 0, 140)
+    dobot.move_to(165, 0, 160)
+    dobot.move_to(165, 0, 140)
+    dobot.snel()
 
 def bestuur_positie( r,k ):
+    """laat de player een positie kiezen met pijltjes"""
     print("Gebruikt pijltjes toetsen om een locatie te kiezen:")
     while True:
         (x,y)=calc_grid_positie( r, k )
@@ -58,52 +77,50 @@ def bestuur_positie( r,k ):
         k=min(4,k)
 
 
-try:
-    real_raw_input = raw_input
-except NameError:
-    real_raw_input = input
+while True:
+    board, winner = EMPTY_BOARD, None
+    chance_for_error = 0.0
 
-board, winner = EMPTY_BOARD, None
-chance_for_error = 0.0
-
-print("Input the col and row number separated by a comma.")
-print("e.g., to tick the middle cell in the top row ?> 2, 1")
-
-while winner is None:
-    print(get_printable_board(board))
-    pallet.pak_pallet_volgende()
-
-    r=0
-    k=0
-    while True:
-        try:
-            (r,k)=bestuur_positie(r,k)
-            board, winner = play(board, 'X', k, r)
-
-            #gelukt, plaats blokje
-            ( x,y )= calc_grid_positie(r,k)
-            pallet.zet(x,y)
-
-            break
-        except (IllegalMove, ValueError):
-            #ongeldige move, schud nee
-            ( x,y )= calc_grid_positie(r,k)
-            dobot.move_to(x,y+3, optil_z)
-            dobot.move_to(x,y, optil_z)
-            dobot.move_to(x,y+3, optil_z)
-
-        except KeyboardInterrupt:
-            exit()
-
-    if winner is None:
+    while winner is None:
+        print(get_printable_board(board))
         pallet.pak_pallet_volgende()
-        (k, r) = minimax(board, 'O')
-        (x, y) = calc_grid_positie(r, k)
-        pallet.zet(x, y)
-        board, winner = play(board, 'O', k, r)
 
-print(get_printable_board(board))
-if winner == 'T':
-    print("Tie!")
-else:
-    print("%s is the winner!" % winner)
+        r=0
+        k=0
+        while True:
+            try:
+                (r,k)=bestuur_positie(r,k)
+                board, winner = play(board, 'X', k, r)
+
+                #gelukt, plaats blokje
+                ( x,y )= calc_grid_positie(r,k)
+                pallet.zet(x,y)
+
+                break
+            except (IllegalMove, ValueError):
+
+                #ongeldige move, schud nee
+                ( x,y )= calc_grid_positie(r,k)
+                dobot.move_to(x,y+3, optil_z)
+                dobot.move_to(x,y, optil_z)
+                dobot.move_to(x,y+3, optil_z)
+
+            except KeyboardInterrupt:
+                exit()
+
+        if winner is None:
+            pallet.pak_pallet_volgende()
+            (k, r) = minimax(board, 'O')
+            (x, y) = calc_grid_positie(r, k)
+            pallet.zet(x, y)
+            board, winner = play(board, 'O', k, r)
+
+    print(get_printable_board(board))
+    if winner == 'T' or winner=='X':
+        sad()
+    else:
+        happy()
+
+    sleep(5)
+    pallet.opruimen()
+    dobot.home()

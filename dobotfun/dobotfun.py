@@ -61,7 +61,7 @@ class DobotFun(Dobot):
 
 
         #gevoeligheid van lost step detectie (2 is te krap)
-        self.set_lost_step_params(3)
+        self.set_lost_step_params(4)
         # self.home()
 
     def format_pose(self):
