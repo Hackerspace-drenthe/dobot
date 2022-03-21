@@ -102,12 +102,16 @@ class PalletFun():
 
     def pak_pallet_volgende(self):
         """pak eerst volgende blokje van pallet"""
+        if self.d.sucking:
+            return
         (r, k) = self.pallet_aanwezig.pop(0)
         self.pallet_in_gebruik.insert(0, (r, k))
         self.pak_pallet(r, k)
 
     def zet_pallet_volgende(self):
         """zet blokjes op eerst volgende vrije plek op pallet"""
+        if not self.d.sucking:
+            return
         (r, k) = self.pallet_in_gebruik.pop(0)
         self.pallet_aanwezig.insert(0, (r, k))
         self.zet_pallet(r, k)

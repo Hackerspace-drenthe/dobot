@@ -45,7 +45,7 @@ class LogConsole:
         if self.show_verbose:
             self.clear_progress()
             if self.colorama:
-                print(colorama.Style.NORMAL + "" + txt + colorama.Style.RESET_ALL)
+                print(colorama.Fore.GREEN+colorama.Style.BRIGHT  + txt + colorama.Style.RESET_ALL)
             else:
                 print( txt)
             sys.stdout.flush()
@@ -54,7 +54,7 @@ class LogConsole:
         if self.show_debug:
             self.clear_progress()
             if self.colorama:
-                print(colorama.Fore.GREEN + "" + txt + colorama.Style.RESET_ALL)
+                print(colorama.Style.NORMAL + "" + txt + colorama.Style.RESET_ALL)
             else:
                 print("# " + txt)
             sys.stdout.flush()

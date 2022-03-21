@@ -18,7 +18,8 @@ from tictactoe import *
 
 import readchar
 
-dobot = DobotFun()
+dobot = DobotFun(port=None, id="WOPR")
+dobot.log.show_debug=False
 pallet = PalletFun(dobot)
 
 block_size = 29
@@ -48,9 +49,32 @@ def happy():
     dobot.move_to(165, 0, 140)
     dobot.snel()
 
+
+
+demo=True
+
 def bestuur_positie( r,k ):
     """laat de player een positie kiezen met pijltjes"""
-    print("Gebruikt pijltjes toetsen om een locatie te kiezen:")
+
+    global demo
+    if demo:
+
+        dobot.verbose("Do you want to play a game?")
+        i, o, e = select.select([sys.stdin], [], [], 30)
+        if i:
+            dobot.verbose("OK")
+            # demo onderbroken
+            demo = False
+        else:
+            # random computer speler
+            dobot.verbose("Duurt lang! Ik doe het wel voor je...")
+            pallet.pak_pallet_volgende()
+            ( k,r ) = random.choice(get_available_moves(board))
+            return ( r,k )
+
+    pallet.pak_pallet_volgende()
+
+    dobot.verbose("Gebruikt pijltjes toetsen om een locatie te kiezen en druk op ENTER. (d=demo mode, q=quit)")
     while True:
         (x,y)=calc_grid_positie( r, k )
         dobot.move_to_nowait( x,y, optil_z )
@@ -66,9 +90,14 @@ def bestuur_positie( r,k ):
             r = r - 1
         elif key == readchar.key.DOWN:
             r = r + 1
+        elif key == 'd':
+            dobot.verbose("Demo mode")
+            demo=True
+            # random computer speler
+            (k,r ) = random.choice(get_available_moves(board))
+            return ( r, k )
         elif key == 'q':
-            print("QUIT")
-            sys.exit(0)
+            sys.exit(1)
 
         #limiteer bereik
         r=max(-2,r)
@@ -76,14 +105,17 @@ def bestuur_positie( r,k ):
         k=max(-2,k)
         k=min(4,k)
 
+import sys, select
+
+
 
 while True:
     board, winner = EMPTY_BOARD, None
-    chance_for_error = 0.0
+
+    demo=True
 
     while winner is None:
         print(get_printable_board(board))
-        pallet.pak_pallet_volgende()
 
         r=0
         k=0
@@ -98,6 +130,7 @@ while True:
 
                 break
             except (IllegalMove, ValueError):
+                dobot.error("Mag niet!")
 
                 #ongeldige move, schud nee
                 ( x,y )= calc_grid_positie(r,k)
@@ -117,10 +150,13 @@ while True:
 
     print(get_printable_board(board))
     if winner == 'T' or winner=='X':
+        dobot.error("A strange game. The only winning move is not to play.")
         sad()
     else:
+        dobot.verbose("HA Ik heb gewonnen!")
         happy()
 
     sleep(5)
+    dobot.verbose("Aan het opruimen...")
     pallet.opruimen()
     dobot.home()

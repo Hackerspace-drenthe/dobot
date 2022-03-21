@@ -14,16 +14,16 @@ class DobotFun(Dobot):
 
     #loggen (handig als je meerdere reobots hebt)
     def verbose(self, txt):
-        self.log.verbose(f"{self.id: <16}: {txt}")
+        self.log.verbose(f"{self.id}: {txt}")
 
     def debug(self, txt):
-        self.log.debug(f"{self.id: <16}: {txt}")
+        self.log.debug(f"{self.id}: {txt}")
 
     def warning(self, txt):
-        self.log.warning(f"{self.id: <16}: {txt}")
+        self.log.warning(f"{self.id}: {txt}")
 
     def error(self, txt):
-        self.log.error(f"{self.id: <16}: {txt}")
+        self.log.error(f"{self.id}: {txt}")
 
 
     def __init__(self, port=None, id=None):
@@ -55,9 +55,10 @@ class DobotFun(Dobot):
         self.verbose(f"Connectie maken naar poort {port} ")
         super().__init__(port=port)
 
-        self.suck(False)
-        self.alarm_check=True
         self.suck_delay=0.25
+        self.los()
+        self.sucking=False
+        self.alarm_check=True
 
 
         #gevoeligheid van lost step detectie (2 is te krap)
@@ -81,7 +82,7 @@ class DobotFun(Dobot):
 
         current_cmd_id = self._get_queued_cmd_current_index()
         while cmd_id > current_cmd_id:
-            self.show_progress(colorama.Back.RED + f"Bezig... {current_cmd_id}/{cmd_id}" + colorama.Style.RESET_ALL)
+            self.show_progress(colorama.Back.RED + f"Bezig... " + colorama.Style.RESET_ALL)
             current_cmd_id = self._get_queued_cmd_current_index()
 
             #alarm?
@@ -109,10 +110,12 @@ class DobotFun(Dobot):
         self.show_progress(colorama.Back.GREEN + "Klaar"+colorama.Style.RESET_ALL)
 
     def vast(self):
+        self.sucking=True
         self.wacht_op(self.suck(True))
         # sleep(self.suck_delay)
 
     def los(self):
+        self.sucking=False
         self.wacht_op(self.suck(False))
         sleep(self.suck_delay)
 
