@@ -24,7 +24,7 @@ dobot.log.show_debug=False
 pallet = PalletFun(dobot)
 
 block_size = 29
-x_start = 135
+x_start = 210
 y_start = -45
 optil_z = pallet.pallet_config.z + block_size + 10
 
@@ -40,17 +40,21 @@ def sad():
     dobot.snel()
 
 def happy():
+    x=220
+
     # :)  gewonnne \o/
-    dobot.move_to(165, 0, 160)
-    dobot.move_to(165, 0, 160)
-    dobot.move_to(165, 0, 140)
-    dobot.move_to(165, 0, 160)
-    dobot.move_to(165, 0, 140)
-    dobot.move_to(165, 0, 160)
-    dobot.move_to(165, 0, 140)
+    dobot.move_to(x, 0, 160)
+    dobot.move_to(x, 0, 160)
+    dobot.move_to(x, 0, 140)
+    dobot.move_to(x, 0, 160)
+    dobot.move_to(x, 0, 140)
+    dobot.move_to(x, 0, 160)
+    dobot.move_to(x, 0, 140)
     dobot.snel()
 
 
+# sad()
+# sys.exit(1)
 
 demo=True
 
