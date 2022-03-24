@@ -7,7 +7,7 @@ from dobotfun.dobotfun import DobotFun
 
 from dobotfun.palletfun import PalletFun
 from tictactoe import *
-
+import os
 # def interrupted(signum, frame):
 #     "called when read times out"
 #     print ('interrupted!')
@@ -31,7 +31,9 @@ optil_z = pallet.pallet_config.z + block_size + 10
 
 
 def calc_grid_positie(r, k):
-    return (x_start + (r * block_size), y_start + (k * block_size))
+    #return (x_start + (r * block_size), y_start + (k * block_size))
+    #hack voor mijn afwijkende dobot
+    return (x_start + (r * block_size), y_start + k*block_size*0.8)
 
 def sad():
     # :( verloren
@@ -59,14 +61,30 @@ def happy():
 # sad()
 # sys.exit(1)
 
+def move_for_player():
+    """make move for player, but first move is random"""
+    moves = get_available_moves(board)
+    if len(moves) == 9:
+        (k, r) = random.choice(moves)
+    else:
+        (k, r) = minimax(board, 'X')
+
+    return (k, r)
+
+
 demo=True
 
 def bestuur_positie( r,k ):
     """laat de player een positie kiezen met pijltjes"""
 
+
     global demo
     if demo:
-
+        os.system('clear')
+        print()
+        print()
+        print()
+        print()
         dobot.verbose("SHALL WE PLAY A GAME?")
         i, o, e = select.select([sys.stdin], [], [], 30)
         if i:
@@ -74,10 +92,10 @@ def bestuur_positie( r,k ):
             # demo onderbroken
             demo = False
         else:
-            # random computer speler
-            dobot.verbose("Duurt lang! Ik doe het wel voor je...")
+            #timeout, let computer make move for player
+            dobot.verbose("TIMEOUT")
             pallet.pak_pallet_volgende()
-            ( k,r ) = random.choice(get_available_moves(board))
+            (k,r)=move_for_player()
             return ( r,k )
 
     pallet.pak_pallet_volgende()
@@ -104,8 +122,8 @@ def bestuur_positie( r,k ):
         elif key == 'd':
             dobot.verbose("Demo mode")
             demo=True
-            # random computer speler
-            (k,r ) = random.choice(get_available_moves(board))
+            # play against self, but first move is random
+            (k,r)=move_for_player()
             return ( r, k )
         elif key == 'q':
             dobot.los()
