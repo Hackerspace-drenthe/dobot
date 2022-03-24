@@ -82,7 +82,8 @@ class DobotFun(Dobot):
 
         current_cmd_id = self._get_queued_cmd_current_index()
         while cmd_id > current_cmd_id:
-            self.show_progress(colorama.Back.RED + f"Bezig... " + colorama.Style.RESET_ALL)
+            # self.show_progress(colorama.Back.RED + f"Bezig... " + colorama.Style.RESET_ALL)
+            self.show_progress(colorama.Back.RED + f"Busy... " + colorama.Style.RESET_ALL)
             current_cmd_id = self._get_queued_cmd_current_index()
 
             #alarm?
@@ -107,7 +108,8 @@ class DobotFun(Dobot):
 
 
 
-        self.show_progress(colorama.Back.GREEN + "Klaar"+colorama.Style.RESET_ALL)
+        # self.show_progress(colorama.Back.GREEN + "Klaar"+colorama.Style.RESET_ALL)
+        self.show_progress(colorama.Back.GREEN + "Ready"+colorama.Style.RESET_ALL)
 
     def vast(self):
         self.sucking=True

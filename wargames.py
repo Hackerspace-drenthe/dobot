@@ -24,7 +24,8 @@ dobot.log.show_debug=False
 pallet = PalletFun(dobot)
 
 block_size = 29
-x_start = 210
+# x_start = 210
+x_start = 180
 y_start = -45
 optil_z = pallet.pallet_config.z + block_size + 10
 
@@ -34,13 +35,15 @@ def calc_grid_positie(r, k):
 
 def sad():
     # :( verloren
-    dobot.move_to(156, -211, pallet.pallet_config.z)
+    x=x_start
+    dobot.speed(5,100)
+    dobot.move_to(x_start, -150, pallet.pallet_config.z)
     dobot.speed(5,1)
-    dobot.move_to(156, -211, pallet.pallet_config.z-10)
+    dobot.move_to(x_start, -150, pallet.pallet_config.z-10)
     dobot.snel()
 
 def happy():
-    x=220
+    x=x_start
 
     # :)  gewonnne \o/
     dobot.move_to(x, 0, 160)
@@ -52,7 +55,7 @@ def happy():
     dobot.move_to(x, 0, 140)
     dobot.snel()
 
-
+# happy()
 # sad()
 # sys.exit(1)
 
@@ -67,7 +70,7 @@ def bestuur_positie( r,k ):
         dobot.verbose("SHALL WE PLAY A GAME?")
         i, o, e = select.select([sys.stdin], [], [], 30)
         if i:
-            dobot.verbose("OK")
+            dobot.verbose("FINE")
             # demo onderbroken
             demo = False
         else:
@@ -79,14 +82,16 @@ def bestuur_positie( r,k ):
 
     pallet.pak_pallet_volgende()
 
-    dobot.verbose("Gebruikt pijltjes toetsen om een locatie te kiezen en druk op ENTER. ")
-    dobot.verbose("(d=demo mode, q=stoppen, h=herstarten")
+    # dobot.verbose("Gebruikt pijltjes toetsen om een locatie te kiezen en druk op ENTER. ")
+    # dobot.verbose("(d=demo mode, q=stoppen, h=herstarten")
+    dobot.verbose("PLEASE CHOOSE A LOCATION.")
     while True:
         (x,y)=calc_grid_positie( r, k )
         dobot.move_to_nowait( x,y, optil_z )
 
         key = readchar.readkey()
         if key == readchar.key.ENTER:
+            dobot.verbose("FINE")
             return ( r,k )
         elif key == readchar.key.RIGHT:
             k = k + 1
@@ -103,6 +108,7 @@ def bestuur_positie( r,k ):
             (k,r ) = random.choice(get_available_moves(board))
             return ( r, k )
         elif key == 'q':
+            dobot.los()
             sys.exit(1)
         elif key == 'h':
             return None
@@ -145,7 +151,8 @@ while True:
 
                 break
             except (IllegalMove, ValueError):
-                dobot.error("Mag niet!")
+                # dobot.error("Mag niet!")
+                dobot.error("ILLEGAL MOVE!")
 
                 #ongeldige move, schud nee
                 ( x,y )= calc_grid_positie(r,k)
@@ -157,6 +164,7 @@ while True:
                 exit()
 
         if winner is None:
+            dobot.verbose("MY MOVE..")
             pallet.pak_pallet_volgende()
             (k, r) = minimax(board, 'O')
             (x, y) = calc_grid_positie(r, k)
@@ -165,12 +173,12 @@ while True:
 
     print(get_printable_board(board))
     if winner == 'T' or winner=='X':
-        dobot.error("A strange game. The only winning move is not to play.")
+        dobot.error("A STRANGE GAME. THE ONLY WINNING MOVE IS NOT TO PLAY.")
         sad()
     else:
-        dobot.verbose("HA Ik heb gewonnen!")
+        dobot.verbose("I WON")
         happy()
 
     sleep(5)
-    dobot.verbose("Aan het opruimen...")
+    dobot.verbose("LETS PLAY AGAIN")
     pallet.opruimen()
