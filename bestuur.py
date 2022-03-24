@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import sys
 
 from dobotfun.dobotfun import DobotFun
 from dobotfun.keyboardcontrol import KeyboardControl

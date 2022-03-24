@@ -49,13 +49,13 @@ Besturing:
                 self.result = False
                 return False
             elif key == keyboard.Key.up:
-                self.p.x = self.p.x + self.step_size
-            elif key == keyboard.Key.down:
                 self.p.x = self.p.x - self.step_size
+            elif key == keyboard.Key.down:
+                self.p.x = self.p.x + self.step_size
             elif key == keyboard.Key.left:
-                self.p.y = self.p.y + self.step_size
-            elif key == keyboard.Key.right:
                 self.p.y = self.p.y - self.step_size
+            elif key == keyboard.Key.right:
+                self.p.y = self.p.y + self.step_size
             elif key == keyboard.Key.page_up:
                 self.p.z = self.p.z + self.step_size
             elif key == keyboard.Key.page_down:
