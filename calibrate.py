@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from time import sleep
 
 from dobotfun.dobotfun import DobotFun

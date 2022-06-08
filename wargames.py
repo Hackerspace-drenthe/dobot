@@ -25,7 +25,7 @@ pallet = PalletFun(dobot)
 
 block_size = 29
 # x_start = 210
-x_start = 180
+x_start = 170
 y_start = -45
 optil_z = pallet.pallet_config.z + block_size + 10
 
