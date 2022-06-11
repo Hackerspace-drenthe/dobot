@@ -24,16 +24,15 @@ dobot.log.show_debug=False
 pallet = PalletFun(dobot)
 
 block_size = 29
-# x_start = 210
-x_start = 170
+x_start = 210
 y_start = -45
 optil_z = pallet.pallet_config.z + block_size + 10
 
 
 def calc_grid_positie(r, k):
-    #return (x_start + (r * block_size), y_start + (k * block_size))
+    return (x_start + (r * block_size), y_start + (k * block_size))
     #hack voor mijn afwijkende dobot
-    return (x_start + (r * block_size), y_start + k*block_size*0.8)
+    #return (x_start + (r * block_size), y_start + k*block_size*0.8)
 
 def sad():
     # :( verloren
@@ -111,6 +110,33 @@ def bestuur_positie( r,k ):
         if key == readchar.key.ENTER:
             dobot.verbose("FINE")
             return ( r,k )
+        elif key == "9":
+            k = 2
+            r = 0
+        elif key == "8":
+            k = 1
+            r = 0
+        elif key == "7":
+            k = 0
+            r = 0
+        elif key == "6":
+            k = 2
+            r = 1
+        elif key == "5":
+            k = 1
+            r = 1
+        elif key == "4":
+            k = 0
+            r = 1
+        elif key == "3":
+            k = 2
+            r = 2
+        elif key == "2":
+            k = 1
+            r = 2
+        elif key == "1":
+            k = 0
+            r = 2
         elif key == readchar.key.RIGHT:
             k = k + 1
         elif key == readchar.key.LEFT:
