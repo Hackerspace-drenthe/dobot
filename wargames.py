@@ -21,7 +21,7 @@ import readchar
 
 dobot = DobotFun(port=None, id="WOPR")
 dobot.log.show_debug=False
-pallet = PalletFun(dobot, 3)
+pallet = PalletFun(dobot, grid_size=3)
 
 block_size = 29
 x_start = 210

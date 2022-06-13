@@ -63,8 +63,8 @@ class PalletFun():
 
         self.pallet_aanwezig = []
 
-        for r in range(4,0,-1):
-            for k in range(4,0,-1):
+        for r in range(grid_size,0,-1):
+            for k in range(grid_size,0,-1):
                 self.pallet_aanwezig.append( (r,k) )
 
         self.pallet_in_gebruik = []
