@@ -10,8 +10,8 @@ from pydobot.dobot import Position
 class PalletConfig:
     """berekening en configuratie van Pallet. een 4x4 grid van blokjes. gebruikt pallet_leer.py om te calibreren"""
 
-    def __init__(self):
-        self.grid_size = 4
+    def __init__(self,grid_size = 4):
+        self.grid_size = grid_size
         self.z = -37
         self.lb = Position()
         self.rb = Position()
@@ -39,12 +39,12 @@ class PalletConfig:
         return x, y
 
     @staticmethod
-    def load():
+    def load(grid_size = 4):
         if os.path.exists("pallet.config"):
             with open('pallet.config', 'rb') as f:
                 return pickle.load(f)
         else:
-            return PalletConfig()
+            return PalletConfig(grid_size)
 
     def save(self):
         with open('pallet.config', 'wb') as f:
@@ -53,8 +53,8 @@ class PalletConfig:
 
 
 class PalletFun():
-    def __init__(self, dobot):
-        self.pallet_config = PalletConfig.load()
+    def __init__(self, dobot, grid_size = 4):
+        self.pallet_config = PalletConfig.load(grid_size)
         # self.pallet_config.print()
 
         self.d = dobot
