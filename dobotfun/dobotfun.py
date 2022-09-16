@@ -168,7 +168,7 @@ class DobotFun(Dobot):
 
 
     def snel(self):
-        self.speed(100,100)
+        self.speed(500,500)
 
     def langzaam(self):
         self.speed(5,5)

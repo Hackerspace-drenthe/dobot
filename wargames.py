@@ -20,7 +20,7 @@ import os
 import readchar
 
 dobot = DobotFun(port=None, id="WOPR")
-dobot.log.show_debug=False
+dobot.log.show_debug=True
 pallet = PalletFun(dobot, grid_size=3)
 
 block_size = 29
@@ -210,7 +210,11 @@ while True:
         if winner is None:
             dobot.verbose("MY MOVE..")
             pallet.pak_pallet_volgende()
-            (k, r) = minimax(board, 'O')
+            moves = get_available_moves(board)
+            if (random.random()<0.2):
+               (k, r) = random.choice(moves)
+            else:
+               (k, r) = minimax(board, 'O')
             (x, y) = calc_grid_positie(r, k)
             pallet.zet(x, y)
             board, winner = play(board, 'O', k, r)
@@ -223,6 +227,6 @@ while True:
         dobot.verbose("I WON")
         happy()
 
-    sleep(5)
+    sleep(2)
     dobot.verbose("LETS PLAY AGAIN")
     pallet.opruimen()
