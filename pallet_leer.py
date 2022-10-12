@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from dobotfun.dobotfun import DobotFun
 from dobotfun.keyboardcontrol import KeyboardControl
 
 from dobotfun.palletfun import PalletConfig
 
-config=PalletConfig.load()
+config=PalletConfig.load(grid_size=3)
 
 dobot=DobotFun()
 keyboard_control=KeyboardControl(dobot)

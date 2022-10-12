@@ -231,7 +231,7 @@ class Dobot:
         self._set_queued_cmd_clear()
         self._set_ptp_joint_params(200, 200, 200, 200, 200, 200, 200, 200)
         self._set_ptp_coordinate_params(velocity=200, acceleration=200)
-        self._set_ptp_jump_params(10, 200)
+        self._set_ptp_jump_params(100,500)
         self._set_ptp_common_params(velocity=100, acceleration=100)
 
         alarms = self.get_alarms()

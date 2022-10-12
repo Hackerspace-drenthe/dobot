@@ -119,6 +119,7 @@ Besturing:
 
                     if self.d.get_alarms():
                         # try to recover
+                        self.d._set_queued_cmd_clear()
                         self.d.clear_alarms()
                         self.d.move_to_pos(self.p)
                         if self.d.get_alarms():

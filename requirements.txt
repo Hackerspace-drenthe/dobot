@@ -1,3 +1,5 @@
 pyserial
 pynput
 colorama
+tictactoe_py
+readchar
