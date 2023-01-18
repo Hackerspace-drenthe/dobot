@@ -687,6 +687,12 @@ class Dobot:
             self._set_stepper_motor(motor_speed, interface)
         else:
             raise DobotException("Wrong Parameter")
+    def conveyor_belt_distance(self, speed, distance, direction=1, interface=0):
+        if 0.0 <= speed <= 1.0 and (direction == 1 or direction == -1):
+            motor_speed = 70* speed * STEP_PER_CIRCLE / MM_PER_CIRCLE * direction
+            self._set_stepper_motor_distance(motor_speed, distance, interface)
+        else:
+            raise DobotException("Wrong Parameter")
 
     def _set_stepper_motor(self, speed, interface=0, motor_control=True):
         msg = Message()
@@ -701,15 +707,10 @@ class Dobot:
             msg.params.extend(bytearray([0x01]))
         else:
             msg.params.extend(bytearray([0x00]))
-        msg.params.extend(bytearray(struct.pack('i', speed)))
+        print(speed)
+        msg.params.extend(bytearray(struct.pack('i', int(speed))))
         return self._send_command(msg)
 
-    def conveyor_belt_distance(self, speed, distance, direction=1, interface=0):
-        if 0.0 <= speed <= 100.0 and (direction == 1 or direction == -1):
-            motor_speed = speed * STEP_PER_CIRCLE / MM_PER_CIRCLE * direction
-            self._set_stepper_motor_distance(motor_speed, distance, interface)
-        else:
-            raise DobotException("Wrong Parameter")
 
     def _set_stepper_motor_distance(self, speed, distance, interface=0, motor_control=True):
         msg = Message()
@@ -724,8 +725,8 @@ class Dobot:
             msg.params.extend(bytearray([0x01]))
         else:
             msg.params.extend(bytearray([0x00]))
-        msg.params.extend(bytearray(struct.pack('i', speed)))
-        msg.params.extend(bytearray(struct.pack('I', distance)))
+        msg.params.extend(bytearray(struct.pack('i', int(speed))))
+        msg.params.extend(bytearray(struct.pack('I', int(distance))))
         return self._send_command(msg)
 
     def _set_cp_params(self, velocity, acceleration, period):

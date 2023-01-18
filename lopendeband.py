@@ -2,6 +2,7 @@
 
 from dobotfun.dobotfun import DobotFun
 
-robot=DobotFun()
+robot = DobotFun()
 
-robot.los()
+robot.conveyor_belt_distance(1, 200000, 1, 1)
+# robot.conveyor_belt(0,1,1)
