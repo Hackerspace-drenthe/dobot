@@ -396,12 +396,16 @@ class Dobot:
         msg.params.extend(bytearray(struct.pack('f', r)))
         return self._send_command(msg)
 
-    def _set_end_effector_suction_cup(self, enable=False):
+    def _set_end_effector_suction_cup(self, enable=False, control=True):
         msg = Message()
         msg.id = 62
         msg.ctrl = 0x03
         msg.params = bytearray([])
-        msg.params.extend(bytearray([0x01]))
+        if control:
+            msg.params.extend(bytearray([0x01]))
+        else:
+            msg.params.extend(bytearray([0x00]))
+
         if enable is True:
             msg.params.extend(bytearray([0x01]))
         else:
@@ -662,8 +666,8 @@ class Dobot:
     def go_arc(self, x, y, z, r, cir_x, cir_y, cir_z, cir_r):
         return self._extract_cmd_index(self._set_arc_cmd(x, y, z, r, cir_x, cir_y, cir_z, cir_r))
 
-    def suck(self, enable):
-        return self._extract_cmd_index(self._set_end_effector_suction_cup(enable))
+    def suck(self, enable, control=True):
+        return self._extract_cmd_index(self._set_end_effector_suction_cup(enable, control))
 
     def set_home(self, x, y, z, r=0.):
         self._set_home_coordinate(x, y, z, r)

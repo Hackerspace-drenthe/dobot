@@ -120,6 +120,7 @@ class DobotFun(Dobot):
         self.sucking=False
         self.wacht_op(self.suck(False))
         sleep(self.suck_delay)
+        self.wacht_op(self.suck(False,False))
 
     def home(self):
         self.verbose("Thuis positie opzoeken...")
