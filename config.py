@@ -1,9 +1,9 @@
 from pydobot.dobot import Position
 
 #vanaf hoe hoog kijkt de cam
-cam_z=100
+cam_z=170
 
-point_z=-22
+point_z=-25
 
 middle=Position(227+30,0,cam_z,0)
 
