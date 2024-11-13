@@ -3,6 +3,10 @@ from pydobot.dobot import Position
 #vanaf hoe hoog kijkt de cam
 cam_z=170
 
+#camera is offsetted from the sucktion cup
+cam_offset_x=50
+
+
 point_z=-25
 
 middle=Position(227+30,0,cam_z,0)
