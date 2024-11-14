@@ -207,7 +207,7 @@ while True:
     wait_cam()
     (x,y)=cam_to_robot(middles[0][1], middles[0][0])
     reset_cam()
-    robot.move_to(x,y,config.point_z-4, 90)
+    robot.move_to(x,y,config.point_z, 90)
     robot.vast()
     robot.move_to(x,y, config.point_z+80, 90)
     robot.move_to(150,150, config.point_z+80, 90)
