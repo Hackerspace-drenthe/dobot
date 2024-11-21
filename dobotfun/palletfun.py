@@ -4,7 +4,7 @@ import sys
 import os
 import logging
 
-from pydobot.dobot import Position
+from .pydobot.dobot import Position
 
 
 class PalletConfig:

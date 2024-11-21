@@ -11,7 +11,7 @@ import serial
 from serial.tools import list_ports
 from _collections import deque
 
-from pydobot.message import Message
+from .message import Message
 
 MAX_QUEUE_LEN = 32
 
