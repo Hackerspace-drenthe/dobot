@@ -57,7 +57,7 @@ class DobotFun(Dobot):
 
         self.suck_delay=0.5
         self.alarm_check=True
-        self.los()
+        self.suck(False,False)
         self.sucking=False
 
 
