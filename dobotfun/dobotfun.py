@@ -97,14 +97,9 @@ class DobotFun(Dobot):
         while cmd_id > current_cmd_id:
             # self.show_progress(colorama.Back.RED + f"Bezig... " + colorama.Style.RESET_ALL)
             self.show_progress(colorama.Back.RED + f"Busy... " + colorama.Style.RESET_ALL)
+
             current_cmd_id = self._get_queued_cmd_current_index()
 
-            #alarm?
-            if self.alarm_check:
-                alarms = self.get_alarms()
-                if alarms:
-                    self.error(f"Alarm: {', '.join(map(str, alarms))}.")
-                    raise(Exception(f"Alarm: {', '.join(map(str, alarms))}."))
 
             #still moving?
             p=self.get_pose().position
@@ -118,6 +113,14 @@ class DobotFun(Dobot):
                 self.error(f"Timeout! (ergens tegenaan gekomen?) ")
                 raise (Exception("Timeout"))
 
+        #alarm?
+        if self.alarm_check:
+            alarms = self.get_alarms()
+            if alarms:
+                self.error(f"Alarm: {', '.join(map(str, alarms))}.")
+                raise(Exception(f"Alarm: {', '.join(map(str, alarms))}."))
+
+
     async def wacht_op_async(self, cmd_id):
         """wacht op command en toon mooie progress info op beeld. ook error handeling"""
 
@@ -129,14 +132,6 @@ class DobotFun(Dobot):
             # self.show_progress(colorama.Back.RED + f"Bezig... " + colorama.Style.RESET_ALL)
             self.show_progress(colorama.Back.RED + f"Busy... " + colorama.Style.RESET_ALL)
             current_cmd_id = self._get_queued_cmd_current_index()
-
-            # alarm?
-            if self.alarm_check:
-                alarms = self.get_alarms()
-                if alarms:
-                    self.error(f"Alarm: {', '.join(map(str, alarms))}.")
-                    self.clear_alarms()
-                    raise (DobotException(f"Alarm: {', '.join(map(str, alarms))}."))
 
             # still moving?
             p = self.get_pose().position
@@ -151,6 +146,15 @@ class DobotFun(Dobot):
                 raise (DobotException("Timeout"))
 
             await asyncio.sleep(0.1)
+
+        # alarm?
+        if self.alarm_check:
+            alarms = self.get_alarms()
+            if alarms:
+                self.error(f"Alarm: {', '.join(map(str, alarms))}.")
+                self.clear_alarms()
+                raise (DobotException(f"Alarm: {', '.join(map(str, alarms))}."))
+
 
         # self.show_progress(colorama.Back.GREEN + "Klaar"+colorama.Style.RESET_ALL)
         self.show_progress(colorama.Back.GREEN + "Ready"+colorama.Style.RESET_ALL)

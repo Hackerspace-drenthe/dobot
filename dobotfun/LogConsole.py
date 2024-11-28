@@ -28,10 +28,10 @@ class LogConsole:
     def error(self, txt):
         self.clear_progress()
         if self.colorama:
-            print(colorama.Fore.RED + colorama.Style.BRIGHT + "" + txt + colorama.Style.RESET_ALL, file=sys.stderr)
+            print(colorama.Fore.RED + colorama.Style.BRIGHT + "" + txt + colorama.Style.RESET_ALL)
         else:
-            print("! " + txt, file=sys.stderr)
-        sys.stderr.flush()
+            print("! " + txt)
+        sys.stdout.flush()
 
     def warning(self, txt):
         self.clear_progress()
@@ -63,13 +63,13 @@ class LogConsole:
         """print progress output to stderr (stays on same line)"""
         self.clear_progress()
         self._progress_uncleared=True
-        print(">>> {}\r".format(txt), end='', file=sys.stderr)
-        sys.stderr.flush()
+        print(">>> {}\r".format(txt), end='')
+        sys.stdout.flush()
 
     def clear_progress(self):
         if self._progress_uncleared:
             import colorama
-            print(colorama.ansi.clear_line(), end='', file=sys.stderr)
+            # print(colorama.ansi.clear_line(), end='', file=sys.stderr)
             print(colorama.ansi.clear_line(), end='', file=sys.stdout)
             # sys.stderr.flush()
             self._progress_uncleared=False
