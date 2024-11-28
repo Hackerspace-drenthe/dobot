@@ -1,4 +1,5 @@
 #GPL3.0 - (c)edwin@datux.nl
+import struct
 import sys
 from time import sleep, time
 
@@ -8,6 +9,7 @@ from serial.tools import list_ports
 from .LogConsole import LogConsole
 from .pydobot import Dobot
 from .pydobot.dobot import MODE_PTP
+from .pydobot.message import Message
 
 
 class DobotFun(Dobot):
@@ -55,6 +57,8 @@ class DobotFun(Dobot):
         self.verbose(f"Connectie maken naar poort {port} ")
         super().__init__(port=port)
 
+        self.verbose(f"Found device ID: {self.get_device_id()}")
+
         self.suck_delay=0.5
         self.alarm_check=True
         self.suck(False,False)
@@ -64,6 +68,14 @@ class DobotFun(Dobot):
         #gevoeligheid van lost step detectie (2 is te krap)
         self.set_lost_step_params(5)
         # self.home()
+
+    def get_device_id(self):
+        msg = Message()
+        msg.id = 5
+        msg.ctrl=0
+        response = self._send_command(msg)
+        return response.params.hex()
+
 
     def format_pose(self):
         p=self.get_pose()
@@ -91,7 +103,7 @@ class DobotFun(Dobot):
                 alarms = self.get_alarms()
                 if alarms:
                     self.error(f"Alarm: {', '.join(map(str, alarms))}.")
-                    sys.exit(1)
+                    raise(Exception(f"Alarm: {', '.join(map(str, alarms))}."))
 
             #still moving?
             p=self.get_pose().position
@@ -103,8 +115,7 @@ class DobotFun(Dobot):
             if time()-last_change>5:
 
                 self.error(f"Timeout! (ergens tegenaan gekomen?) ")
-                sys.exit(1)
-                return
+                raise (Exception("Timeout"))
 
 
 
