@@ -1,4 +1,5 @@
 #GPL3.0 - (c)edwin@datux.nl
+import asyncio
 import struct
 import sys
 from time import sleep, time
@@ -8,7 +9,7 @@ from serial.tools import list_ports
 
 from .LogConsole import LogConsole
 from .pydobot import Dobot
-from .pydobot.dobot import MODE_PTP
+from .pydobot.dobot import MODE_PTP, DobotException
 from .pydobot.message import Message
 
 
@@ -117,7 +118,39 @@ class DobotFun(Dobot):
                 self.error(f"Timeout! (ergens tegenaan gekomen?) ")
                 raise (Exception("Timeout"))
 
+    async def wacht_op_async(self, cmd_id):
+        """wacht op command en toon mooie progress info op beeld. ook error handeling"""
 
+        last_change = time()
+        prev_pose = self.get_pose().position
+
+        current_cmd_id = self._get_queued_cmd_current_index()
+        while cmd_id > current_cmd_id:
+            # self.show_progress(colorama.Back.RED + f"Bezig... " + colorama.Style.RESET_ALL)
+            self.show_progress(colorama.Back.RED + f"Busy... " + colorama.Style.RESET_ALL)
+            current_cmd_id = self._get_queued_cmd_current_index()
+
+            # alarm?
+            if self.alarm_check:
+                alarms = self.get_alarms()
+                if alarms:
+                    self.error(f"Alarm: {', '.join(map(str, alarms))}.")
+                    self.clear_alarms()
+                    raise (DobotException(f"Alarm: {', '.join(map(str, alarms))}."))
+
+            # still moving?
+            p = self.get_pose().position
+            if (p.x != prev_pose.x or p.y != prev_pose.y or p.z != prev_pose.z or p.r != prev_pose.r):
+                last_change = time()
+                prev_pose = p
+
+            # te lang niet verplaatst? dit gebeurd door de lost step detectie, robot komt dan niet op zn doel plaats.
+            if time() - last_change > 5:
+                self.error(f"Timeout! (ergens tegenaan gekomen?) ")
+                self.clear_alarms()
+                raise (DobotException("Timeout"))
+
+            await asyncio.sleep(0.1)
 
         # self.show_progress(colorama.Back.GREEN + "Klaar"+colorama.Style.RESET_ALL)
         self.show_progress(colorama.Back.GREEN + "Ready"+colorama.Style.RESET_ALL)
@@ -133,6 +166,18 @@ class DobotFun(Dobot):
         sleep(self.suck_delay)
         self.wacht_op(self.suck(False,False))
 
+    async def vast_async(self):
+        self.sucking=True
+        await self.wacht_op_async(self.suck(True))
+
+
+    async def los_async(self):
+        self.sucking=False
+        await self.wacht_op_async(self.suck(False))
+        await asyncio.sleep(self.suck_delay)
+        await self.wacht_op_async(self.suck(False,False))
+
+
     def home(self):
         self.verbose("Thuis positie opzoeken...")
         self.wacht_op(super().home())
@@ -144,6 +189,15 @@ class DobotFun(Dobot):
         id = super().move_to(x, y, z, r, MODE_PTP.MOVJ_XYZ)
         self.wacht_op(id)
         return id
+
+    async def move_to_async(self, x, y, z, r=0., mode=None):
+        self.debug(f"move_to x={x:.2f}, y={y:.2f}, z={z:.2f}, r={r:.2f}")
+        #deze zorgt dat een command pas ready is als hij op de plaats van bestemming is (ongeveer)
+        self.set_lost_step_command()
+        id = super().move_to(x, y, z, r, MODE_PTP.MOVJ_XYZ)
+        await self.wacht_op_async(id)
+        return id
+
 
     def move_to_pos(self, p):
         self.move_to(p.x, p.y, p.z, p.r)
