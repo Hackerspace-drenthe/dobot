@@ -60,7 +60,7 @@ class DobotFun(Dobot):
 
         self.verbose(f"Found device ID: {self.get_device_id()}")
 
-        self.suck_delay=0.5
+        self.suck_delay=0.25
         self.alarm_check=True
         self.suck(False,False)
         self.sucking=False
