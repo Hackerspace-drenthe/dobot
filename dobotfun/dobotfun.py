@@ -153,6 +153,7 @@ class DobotFun(Dobot):
             if alarms:
                 self.error(f"Alarm: {', '.join(map(str, alarms))}.")
                 self.clear_alarms()
+                self.suck(False,False)
                 raise (DobotException(f"Alarm: {', '.join(map(str, alarms))}."))
 
 
